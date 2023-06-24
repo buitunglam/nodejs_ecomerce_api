@@ -39,22 +39,24 @@ class AccessService {
       });
       if (newShop) {
         // create privateKey, publicKey crypto nó sẽ gen dựa vào thuật toán bất đối xứng
-        const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-          modulusLength: 4096,
-          publicKeyEncoding: {
-            type: "pkcs1",
-            format: "pem",
-          },
-          privateKeyEncoding: {
-            type: "pkcs1",
-            format: "pem",
-          },
-        });
-
+        // const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
+        //   modulusLength: 4096,
+        //   publicKeyEncoding: {
+        //     type: "pkcs1",
+        //     format: "pem",
+        //   },
+        //   privateKeyEncoding: {
+        //     type: "pkcs1",
+        //     format: "pem",
+        //   },
+        // });
+        const  privateKey = crypto.randomBytes(64).toString('hex');
+        const publicKey = crypto.randomBytes(64).toString('hex');
         // save public key and user id to db
         const publicKeyString = await KeyTokenService.createKeyToken({
           userId: newShop._id,
           publicKey,
+          privateKey
         });
         if (!publicKeyString) {
           return {
@@ -62,11 +64,11 @@ class AccessService {
             message: "publicKeyString error",
           };
         }
-        const publicKeyObject = crypto.createPublicKey(publicKeyString);
+        // const publicKeyObject = crypto.createPublicKey(publicKeyString);
         // create token pair
         const tokens = await createTokenPair(
           { userId: newShop._id, email },
-          publicKeyObject,
+          publicKey,
           privateKey
         );
         console.log("tokens....", tokens);
