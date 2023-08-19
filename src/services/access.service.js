@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const KeyTokenService = require("./keytoken.service");
 const createTokenPair = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
+const { BadResquestError } = require("../core/error.response");
 
 const RoleShop = {
   SHOP: "SHOP",
@@ -15,17 +16,19 @@ const RoleShop = {
 
 class AccessService {
   static signup = async ({ name, email, password }) => {
-    try {
+    // try {
       //step1: check mail exist
       /**
        * use lean will return pure object javascript so it will reduce size of reponse
        **/
       const holderShop = await shopModel.findOne({ email }).lean();
+      console.log('holderShop...', holderShop);
       if (holderShop) {
-        return {
-          code: "xxx",
-          message: "Shop is already registed!",
-        };
+        // return {
+        //   code: "xxx",
+        //   message: "Shop is already registed!",
+        // };
+        throw new BadResquestError("Error: Shop is already registed!");
       }
 
       // hash passwrod
@@ -50,13 +53,13 @@ class AccessService {
         //     format: "pem",
         //   },
         // });
-        const  privateKey = crypto.randomBytes(64).toString('hex');
-        const publicKey = crypto.randomBytes(64).toString('hex');
+        const privateKey = crypto.randomBytes(64).toString("hex");
+        const publicKey = crypto.randomBytes(64).toString("hex");
         // save public key and user id to db
         const publicKeyString = await KeyTokenService.createKeyToken({
           userId: newShop._id,
           publicKey,
-          privateKey
+          privateKey,
         });
         if (!publicKeyString) {
           return {
@@ -87,13 +90,13 @@ class AccessService {
         code: 200,
         metadata: null,
       };
-    } catch (error) {
-      return {
-        status: "error",
-        code: "xxx",
-        message: error.message,
-      };
-    }
+    // } catch (error) {
+    //   return {
+    //     status: "error",
+    //     code: "123",
+    //     message: error.message,
+    //   };
+    // }
   };
 }
 
