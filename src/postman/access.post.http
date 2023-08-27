@@ -6,7 +6,7 @@ Content-Type: application/json
 x-api-key: 8d4afd9435e45fd2c2e347ebea6c3bc7f3bc17fa74e9a55061c267aeba6a7d589d2aba2688df0d7cf7087a3787fb44ceb574d5aad7a3ab98df3c95ec57ea12a8
 
 {
-  "name": "Lam004",
-  "email": "lam004@gmail.com",
+  "name": "Lam001",
+  "email": "lam001@gmail.com",
   "password": "123456"
 }

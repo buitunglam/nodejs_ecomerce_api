@@ -20,9 +20,15 @@ const keyTokenSchema = new Schema(
       type: String,
       require: true,
     },
-    refreshToken: {
+    // lưu những refresh token cũ vào và để sau check nếu acc nào dùng lại chứng tỏ đang cố truy cập trái phép
+    refreshTokensUsed: {
       type: Array,
       default: [],
+    },
+    // lưu token hiện tại
+    refreshToken: {
+      type: String,
+      require: true,
     },
   },
   {

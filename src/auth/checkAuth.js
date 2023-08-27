@@ -15,6 +15,7 @@ const apiKey = async (req, res, next) => {
         message: "Fobiden Error",
       });
     }
+    
     // check objKey
     const objKey = await findById(key);
     if (!objKey) {
