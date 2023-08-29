@@ -2,6 +2,7 @@
 
 const keyTokenModel = require("../models/keytoken.model");
 const { Types } = require("mongoose");
+const shopModel = require("../models/shop.model");
 class KeyTokenService {
   static createKeyToken = async ({
     userId,
@@ -23,7 +24,7 @@ class KeyTokenService {
         filter,
         update,
         options
-      );
+      ).lean();
       console.log("tokens....", { tokens, filter, update, options });
       return tokens ? tokens.publicKey : null;
     } catch (error) {
@@ -37,9 +38,24 @@ class KeyTokenService {
       .lean();
   };
 
+  // remve when logout
   static removeById = async (id) => {
-    return await keyTokenModel.deleteOne({id})
+    return await keyTokenModel.findByIdAndDelete(id)
   };
+
+  static findByRefreshTokenUse = async (refreshToken) => {
+    return await keyTokenModel.findOne({refreshTokensUsed: refreshToken}).lean()
+  }
+
+  static findByRefreshToken = async (refreshToken) => {
+    return await keyTokenModel.findOne({refreshToken})
+  }
+
+  // remove when refresh token
+  static deleteKeyById = async (userId) => {
+    return await keyTokenModel.deleteOne({user: new Types.ObjectId(userId)})
+  }
+
 }
 
 module.exports = KeyTokenService;

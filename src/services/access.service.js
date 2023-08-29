@@ -3,11 +3,12 @@ const shopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const KeyTokenService = require("./keytoken.service");
-const { createTokenPair } = require("../auth/authUtils");
+const { createTokenPair, verifyJWT } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
 const {
   BadResquestError,
   AuthFailureError,
+  ForbidenError,
 } = require("../core/error.response");
 const { findEmail } = require("./shop.service");
 
@@ -118,7 +119,7 @@ class AccessService {
       publicKey,
       privateKey
     );
-    const {_id: userId} = foundShop
+    const { _id: userId } = foundShop;
     await KeyTokenService.createKeyToken({
       userId,
       refreshToken: tokens.refreshToken,
@@ -142,6 +143,58 @@ class AccessService {
     const delKey = await KeyTokenService.removeById(keyStore._id);
     console.log("delkey....", delKey);
     return delKey;
+  };
+
+  static handleRefreshToken = async (refreshToken) => {
+    const foundToken = await KeyTokenService.findByRefreshTokenUse(
+      refreshToken
+    );
+    // Check xem token này đã được sử dụng hay chưa
+    // Nếu có
+    if (foundToken) {
+      // decode xem mày là thằng nào
+      const { userId, email } = await verifyJWT(
+        refreshToken,
+        foundToken.privateKey
+      );
+      // xoa tất cả token trong keyStore
+      await KeyTokenService.deleteKeyById(userId);
+      throw new ForbidenError("Something went wrong happend. Please relogin!");
+    }
+    // Nếu chưa
+    const holderToken = await KeyTokenService.findByRefreshToken(refreshToken);
+    console.log("holderToken...", holderToken);
+    if (!holderToken) throw new AuthFailureError("Shop is not registerd");
+    // verify token
+    const { userId, email } = await verifyJWT(
+      refreshToken,
+      holderToken.privateKey
+    );
+    console.log("verify...", { userId, email});
+    // check userId
+    const foundShop = await findEmail({email});
+    if (!foundShop) throw new AuthFailureError("Shop not registed");
+    // cấp 1 cặp key mới
+    const tokens = await createTokenPair(
+      { userId, email },
+      holderToken.publicKey,
+      holderToken.privateKey
+    );
+    // Update token
+    await holderToken.updateOne({
+      $set: {
+        refreshToken: tokens.refreshToken,
+      },
+      $addToSet: {
+        refreshTokensUsed: refreshToken,
+      },
+    });
+
+    return {
+      user: { userId, email },
+      tokens,
+    };
+
   };
 }
 
