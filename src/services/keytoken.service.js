@@ -20,11 +20,9 @@ class KeyTokenService {
           refreshToken,
         },
         options = { upsert: true, new: true }; // nếu như có new = true sẽ update. Nếu ko có sẽ tạo mới
-      const tokens = await keyTokenModel.findOneAndUpdate(
-        filter,
-        update,
-        options
-      ).lean();
+      const tokens = await keyTokenModel
+        .findOneAndUpdate(filter, update, options)
+        .lean();
       console.log("tokens....", { tokens, filter, update, options });
       return tokens ? tokens.publicKey : null;
     } catch (error) {
@@ -33,29 +31,28 @@ class KeyTokenService {
   };
 
   static findByUserId = async (userId) => {
-    return await keyTokenModel
-      .findOne({ user: new Types.ObjectId(userId) })
-      .lean();
+    return await keyTokenModel.findOne({ user: new Types.ObjectId(userId) });
   };
 
   // remve when logout
   static removeById = async (id) => {
-    return await keyTokenModel.findByIdAndDelete(id)
+    return await keyTokenModel.findByIdAndDelete(id);
   };
 
   static findByRefreshTokenUse = async (refreshToken) => {
-    return await keyTokenModel.findOne({refreshTokensUsed: refreshToken}).lean()
-  }
+    return await keyTokenModel
+      .findOne({ refreshTokensUsed: refreshToken })
+      .lean();
+  };
 
   static findByRefreshToken = async (refreshToken) => {
-    return await keyTokenModel.findOne({refreshToken})
-  }
+    return await keyTokenModel.findOne({ refreshToken });
+  };
 
   // remove when refresh token
   static deleteKeyById = async (userId) => {
-    return await keyTokenModel.deleteOne({user: new Types.ObjectId(userId)})
-  }
-
+    return await keyTokenModel.deleteOne({ user: new Types.ObjectId(userId) });
+  };
 }
 
 module.exports = KeyTokenService;

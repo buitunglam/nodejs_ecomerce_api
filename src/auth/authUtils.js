@@ -9,7 +9,7 @@ const HEADERS = {
   API_KEY: "x-api-key",
   CLIENT_ID: "x-client-id",
   AUTHORIZATION: "authorization",
-  REFRESH_TOKEN: "refreshtoken" 
+  REFRESH_TOKEN: "x-rtoken-id" 
 };
 
 const createTokenPair = async (payload, publicKey, privateKey) => {
@@ -112,11 +112,9 @@ const authenticationV2 = asyncHandler(async (req, res, next) => {
   try {
     const decodeUser = JWT.verify(accessToken, keyStore.publicKey);
     if (userId != decodeUser.userId) throw new AuthFailureError("Invalid User");
-    console.log("decodeUser...", keyStore);
     req.keyStore = keyStore;
     return next();
   } catch (error) {
-    console.log("...error...", error);
     throw error;
   }
 });
