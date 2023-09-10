@@ -6,7 +6,7 @@ const KeyTokenService = require("./keytoken.service");
 const { createTokenPair, verifyJWT } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
 const {
-  BadResquestError,
+  BadRequestError,
   AuthFailureError,
   ForbidenError,
 } = require("../core/error.response");
@@ -32,7 +32,7 @@ class AccessService {
       //   code: "xxx",
       //   message: "Shop is already registed!",
       // };
-      throw new BadResquestError("Error: Shop is already registed!");
+      throw new BadRequestError("Error: Shop is already registed!");
     }
 
     // hash passwrod
@@ -106,7 +106,7 @@ class AccessService {
   static login = async ({ email, password, refreshToken = null }) => {
     // 1.check email
     const foundShop = await findEmail({ email });
-    if (!foundShop) throw new BadResquestError("Shop not registerd");
+    if (!foundShop) throw new BadRequestError("Shop not registerd");
     // 2.
     const match = bcrypt.compare(password, foundShop.password);
     if (!match) throw new AuthFailureError("Authentication error");

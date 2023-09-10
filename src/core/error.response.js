@@ -19,13 +19,13 @@ class ErrorResponse extends Error {
   }
 }
 
-class ConfictRequestError extends ErrorResponse {
+class ConflictRequestError extends ErrorResponse {
   constructor(message = ReasonStatus.CONFICT, statusCode = StatusCode.CONFLIT) {
     super(message, statusCode)
   }
 }
 
-class BadResquestError extends ErrorResponse {
+class BadRequestError extends ErrorResponse {
   constructor(message = ReasonStatus.FOREBIDEN, statusCode = StatusCode.FOREBIDEN) {
     super(message, statusCode)
   }
@@ -50,8 +50,8 @@ class ForbidenError extends ErrorResponse {
 }
 
 module.exports = {
-  ConfictRequestError,
-  BadResquestError,
+  ConflictRequestError,
+  BadRequestError,
   AuthFailureError,
   NotFoundError,
   ForbidenError
