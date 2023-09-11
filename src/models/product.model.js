@@ -25,7 +25,7 @@ const clothingSchema = new Schema({
   size: String,
   material: String
 }, {
-  collection: 'clothings',
+  collection: 'clothes',
   timestamps: true  
 })
 

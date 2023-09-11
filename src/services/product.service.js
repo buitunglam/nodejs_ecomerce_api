@@ -1,4 +1,4 @@
-const { BadResquestError } = require("../core/error.response");
+const { BadRequestError } = require("../core/error.response");
 const { product, electronic, clothing } = require("../models/product.model");
 
 // defined Factory class to create product
@@ -10,7 +10,7 @@ class ProductFactory {
       case "Clothing":
         return new Clothing(payload).createProduct();
       default:
-        return new BadResquestError(`Invalid Product type ${type}`);
+        return new BadRequestError(`Invalid Product type ${type}`);
     }
   }
 }
@@ -50,6 +50,7 @@ class Product {
 
   // create new product
   async createProduct() {
+    console.log("create product in product...");
     return await product.create(this);
   }
 }
@@ -58,24 +59,23 @@ class Product {
 class Clothing extends Product {
   async createProduct() {
     const newClothing = await clothing.create(this.product_attribute);
-    if (!newClothing) throw new BadResquestError("Error create new Clothing");
-
+    if (!newClothing) throw new BadRequestError("Create new Clothing error");
     const newProduct = await super.createProduct();
-    if (!newProduct) throw new BadResquestError("Create new product");
-
+    if (!newProduct) throw new BadRequestError("Create new product error");
     return newProduct;
   }
+
 }
 
 // defined sub class  for differnce product type electronic
 class Electronics extends Product {
-  async createProduct() {
+  async onCreateProduct() {
     const newElectronic = await electronic.create(this.product_attribute);
     if (!newElectronic)
-      throw new BadResquestError("Error create new Electronic");
+      throw new BadRequestError("Error create new Electronic");
 
     const newProduct = await super.createProduct();
-    if (!newProduct) throw new BadResquestError("Create new product");
+    if (!newProduct) throw new BadRequestError("Create new product");
 
     return newProduct;
   }
