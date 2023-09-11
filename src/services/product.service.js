@@ -8,7 +8,7 @@ class ProductFactory {
       case "Electronics":
         return new Electronics(payload);
       case "Clothing":
-        return new Clothing(payload);
+        return new Clothing(payload).createProduct();
       default:
         return new BadResquestError(`Invalid Product type ${type}`);
     }
