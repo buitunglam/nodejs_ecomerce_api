@@ -6,7 +6,7 @@ class ProductFactory {
   static async createProduct(type, payload) {
     switch (type) {
       case "Electronics":
-        return new Electronics(payload);
+        return new Electronics(payload).createProduct();
       case "Clothing":
         return new Clothing(payload).createProduct();
       default:
@@ -14,17 +14,6 @@ class ProductFactory {
     }
   }
 }
-
-/*
-  product_name: { type: String, require: true },
-  product_thumb: { type: String, require: true },
-  product_description: String,
-  product_price: {type: Number, require: true},
-  product_quantity: {type: Number, require: true},
-  product_type: {type: String, require: true, enum: ["Electronics", "Clothing", "Furniture"]},
-  product_shop: {type: Schema.Types.ObjectId, ref: "Shop"},
-  product_attribute: {type: Schema.Types.Mixed, require: true},
-*/
 
 // define base product class
 class Product {
@@ -49,9 +38,8 @@ class Product {
   }
 
   // create new product
-  async createProduct() {
-    console.log("create product in product...");
-    return await product.create(this);
+  async createProduct(productId) {
+    return await product.create({...this, _id: productId});
   }
 }
 
@@ -64,17 +52,19 @@ class Clothing extends Product {
     if (!newProduct) throw new BadRequestError("Create new product error");
     return newProduct;
   }
-
 }
 
 // defined sub class  for differnce product type electronic
 class Electronics extends Product {
-  async onCreateProduct() {
-    const newElectronic = await electronic.create(this.product_attribute);
+  async createProduct() {
+    const newElectronic = await electronic.create({
+      ...this.product_attribute,
+      product_shop: this.product_shop,
+    });
     if (!newElectronic)
       throw new BadRequestError("Error create new Electronic");
 
-    const newProduct = await super.createProduct();
+    const newProduct = await super.createProduct(newElectronic._id);
     if (!newProduct) throw new BadRequestError("Create new product");
 
     return newProduct;

@@ -72,6 +72,7 @@ const authentication = asyncHandler(async (req, res, next) => {
 });
 
 const authenticationV2 = asyncHandler(async (req, res, next) => {
+  console.log('vao auth v2...');
   /*
     1 - Check userID missing
     2 - Get accesstoken
@@ -113,6 +114,7 @@ const authenticationV2 = asyncHandler(async (req, res, next) => {
     const decodeUser = JWT.verify(accessToken, keyStore.publicKey);
     if (userId != decodeUser.userId) throw new AuthFailureError("Invalid User");
     req.keyStore = keyStore;
+    req.user = decodeUser
     return next();
   } catch (error) {
     throw error;
