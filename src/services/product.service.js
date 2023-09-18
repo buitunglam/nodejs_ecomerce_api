@@ -1,5 +1,6 @@
 const { BadRequestError } = require("../core/error.response");
 const { product, electronic, clothing } = require("../models/product.model");
+const { findAllDraftsForshop } = require("../models/repositories/product.repo");
 
 // defined Factory class to create product
 class ProductFactory {
@@ -39,7 +40,7 @@ class Product {
 
   // create new product
   async createProduct(productId) {
-    return await product.create({...this, _id: productId});
+    return await product.create({ ...this, _id: productId });
   }
 }
 
