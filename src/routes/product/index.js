@@ -17,6 +17,7 @@ router.get("/:product_id", asynHandler(ProductController.findProduct));
 router.use(authenticationV2);
 // create product
 router.post("", asynHandler(ProductController.createProduct));
+router.patch("/:productId", asynHandler(ProductController.updateProduct));
 router.post("/publish/:id", asynHandler(ProductController.publishProduct));
 router.post("/unPublish/:id", asynHandler(ProductController.unPublishProduct));
 // get all draft shop
