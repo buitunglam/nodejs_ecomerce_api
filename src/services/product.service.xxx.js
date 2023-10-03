@@ -49,7 +49,7 @@ class ProductFactory {
   }
 
   static async findAllPublishForshop({ product_shop, limit = 50, skip = 0 }) {
-    const query = { product_shop, isPublish: true };
+    const query = { product_shop, isPublished: true };
     const listDrafts = await findAllPublishForshop({ query, limit, skip });
     console.log("query....", { query, listDrafts });
     return listDrafts;
@@ -63,7 +63,7 @@ class ProductFactory {
     limit = 50,
     sort = "ctime",
     page = 1,
-    filter = { isPublish: true },
+    filter = { isPublished: true },
   }) {
     return await findAllProducts({
       limit,

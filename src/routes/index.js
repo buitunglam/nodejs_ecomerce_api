@@ -2,11 +2,13 @@ const express = require("express");
 const router = express.Router();
 const accessRouter = require("./access");
 const productRouter = require("./product");
+const discountRouter = require("./discount");
 const { apiKey, permissions } = require("../auth/checkAuth");
 
 router.use(apiKey);
 // check permission
 router.use(permissions('0000'))
+router.use('/v1/api/discount',discountRouter);
 router.use('/v1/api/product',productRouter);
 router.use('/v1/api',accessRouter);
 

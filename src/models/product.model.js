@@ -27,7 +27,7 @@ const productSchema = new Schema({
   },
   product_variations: {type: Array, default: []},
   isDraft: {type: Boolean, default: true, index: true, select: false},
-  isPublish: {type: Boolean, default: false, index: true, select: false}
+  isPublished: {type: Boolean, default: false, index: true, select: false}
 }, {
   collection: COLLECTION_NAME,
   timestamps: true
