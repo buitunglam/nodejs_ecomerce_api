@@ -7,7 +7,11 @@ const {
   furniture,
   clothing,
 } = require("../../models/product.model");
-const { getSelectData, unGetSelectData } = require("../../utils");
+const {
+  getSelectData,
+  unGetSelectData,
+  convertToObjectIdMongoDB,
+} = require("../../utils");
 
 const findAllDraftsForshop = async ({ query, limit, skip }) => {
   return await queryProduct({ query, limit, skip });
@@ -87,12 +91,12 @@ const updateProductById = async ({
   productId,
   bodyUpdate,
   model,
-  isNew = true
+  isNew = true,
 }) => {
   return await model.findByIdAndUpdate(productId, bodyUpdate, {
-    new: isNew
-  })  
-} 
+    new: isNew,
+  });
+};
 
 const findProduct = async ({ product_id, unSelect }) => {
   const products = await product
@@ -100,6 +104,12 @@ const findProduct = async ({ product_id, unSelect }) => {
     .select(unGetSelectData(unSelect));
 
   return products;
+};
+
+const getProductById = async (productId) => {
+  return await product
+    .findOne({ _id: convertToObjectIdMongoDB(productId) })
+    .lean();
 };
 
 module.exports = {
@@ -110,5 +120,6 @@ module.exports = {
   searchProductByUser,
   findAllProducts,
   findProduct,
-  updateProductById
+  updateProductById,
+  getProductById
 };
