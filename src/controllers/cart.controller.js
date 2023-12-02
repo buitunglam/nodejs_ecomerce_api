@@ -16,7 +16,7 @@ class CartController {
 
   addToCart = async (req, res, next) => {
     new SuccessResponse({
-      message: "CAdd cart success!",
+      message: "Add cart success!",
       metadata: await CartService.addToCart(req.body),
     }).send(res);
   };

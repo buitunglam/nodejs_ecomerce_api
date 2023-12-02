@@ -44,7 +44,7 @@ const publishProductByshop = async ({ product_shop, product_id }) => {
   });
   if (!foundShop) return null;
   foundShop.isDraft = false;
-  foundShop.isPublish = true;
+  foundShop.isPublished = true;
   const { modifiedCount } = await foundShop.updateOne(foundShop);
   return modifiedCount;
 };
@@ -114,12 +114,12 @@ const getProductById = async (productId) => {
 
 const checkProductById = async (products) => {
   return await Promise.all(products.map(async product => {
-    const foundProduct = await getProductById(product.productId)
+    const foundProduct = await getProductById(product.product_id)
     if (foundProduct) {
       return {
         price: foundProduct.product_price,
         quantity: product.quantity,
-        productId: product.productId
+        productId: product.product_id
       }
     }
   }))

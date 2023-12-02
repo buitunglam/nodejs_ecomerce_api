@@ -1,10 +1,10 @@
 'use strict'
 
 const { convertToObjectIdMongoDB } = require("../../utils")
-const cartModel = require("../cart.model")
+const {cart} = require("../cart.model")
 
 const findCartById = async (cardId) => {
-  return await cartModel.findOne({ _id: convertToObjectIdMongoDB(cardId), cart_state: 'active' }).lean()
+  return await cart.findOne({ _id: convertToObjectIdMongoDB(cardId), cart_state: 'active' }).lean()
 }
 
 module.exports = {

@@ -52,10 +52,12 @@ class CheckoutService {
   */
 
   static async checkoutReview({
-    carId, userId, shop_order_ids = []
+    cartId, userId, shop_order_ids = []
   }) {
+    console.log("cartId....", cartId, userId, shop_order_ids);
     // check cartId exist
-    const foundCart = await findCartById({ carId })
+    const foundCart = await findCartById(cartId)
+    console.log("foundCart....", foundCart);
     if (!foundCart) throw new BadRequestError('Cart dose not exist!')
 
     const checkout_order = {
@@ -88,6 +90,7 @@ class CheckoutService {
         item_products: checkProductServer
       }
 
+      console.log("shop_discounts....", shop_discounts);
       // Nếu shopDiscount tồn tại > 0, check xem có hợp lệ hay ko
       if (shop_discounts.length > 0) {
         // gỉa sử chỉ có 1 discount
@@ -95,7 +98,7 @@ class CheckoutService {
         const { totalPrice = 0, discount = 0 } = await getDiscountAmount({
           codeId: shop_discounts[0].codeId,
           userId,
-          shopId,
+          shopId: shop_discounts[0].shop_id,
           products: checkProductServer
         })
 
@@ -121,6 +124,6 @@ class CheckoutService {
     }
 
   }
-
-
 }
+
+module.exports = CheckoutService;

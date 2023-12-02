@@ -2,7 +2,17 @@
 const _ = require("lodash");
 const { Types } = require("mongoose");
 
-const convertToObjectIdMongoDB = (id) => new Types.ObjectId(id);
+const convertToObjectIdMongoDB = (id) => {
+  console.log("id....", id, typeof id);
+  try {
+    const objectId = new Types.ObjectId(id);
+    return objectId;
+  } catch (error) {
+    console.error("Error converting to ObjectId:", error.message);
+    // Handle the error as needed, e.g., return null or throw a custom error
+    return null;
+  }
+}
 
 const getInfoData = ({ fileds = [], object = {} }) => {
   return _.pick(object, fileds);

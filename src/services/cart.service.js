@@ -43,25 +43,28 @@ class CartService {
   static async updateUserCartQuantity({ userId, product }) {
     const { quantity, productId } = product;
     const query = {
-        cart_userId: userId,
-        "cart_products.productId": productId,
-        cart_state: "active",
+      cart_userId: userId,
+      "cart_products.productId": productId,
+      cart_state: "active",
+    };
+    const updateSet = {
+      $inc: {
+        "cart_products.$.quantity": quantity,
       },
-      updateSet = {
-        $inc: {
-          "cart_products.$.quantity": quantity,
-        },
-      },
-      options = { upsert: true, new: true };
+    };
+    const options = { upsert: true, new: true };
     console.log("updateOrInsert cart......", query);
 
     return await cart.findOneAndUpdate(query, updateSet, options);
   }
+
   // END REPO CART
 
   static async addToCart({ userId, product = {} }) {
+    console.log("userId, product....", { userId, product });
     // check cart exist or not
     const userCart = await cart.findOne({ cart_userId: userId });
+    console.log("userCart....", userCart);
     if (!userCart) {
       // create cart for user
       return await CartService.createUserCart({ userId, product });
